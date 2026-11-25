@@ -114,3 +114,7 @@ The raw, unedited AI export still goes into `ai-logs/` at submission.
 > commitand push
 
 (Chose: copy the Claude Code session JSONL files into ai-logs/ with only the email address redacted.)
+
+## Prompt 18 — 2026-11-25
+
+> commit have claude iocn remove that
