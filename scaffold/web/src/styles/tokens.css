@@ -1,0 +1,76 @@
+/* Design tokens. Components use only these variables, so theming is one place. */
+:root {
+  color-scheme: light dark;
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --border: #e3e6eb;
+  --text: #16191d;
+  --text-muted: #5f6873;
+  --accent: #2f5bea;
+  --accent-text: #ffffff;
+  --accent-soft: #e6ecfd;
+  --danger: #c7362f;
+  --danger-soft: #fbe9e8;
+  --success: #1f8a4c;
+  --success-soft: #e5f4ec;
+  --warn: #9a6200;
+  --warn-soft: #fff4dc;
+
+  --bubble-in: #ffffff;
+  --bubble-out: #2f5bea;
+  --bubble-out-text: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --shadow-md: 0 6px 20px rgb(16 24 40 / 0.12);
+  --focus: 0 0 0 3px rgb(47 91 234 / 0.35);
+
+  --topbar-h: 52px;
+  --inbox-w: 340px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --surface: #171a20;
+    --surface-2: #1f232b;
+    --border: #2a2f38;
+    --text: #e8eaed;
+    --text-muted: #9aa3ad;
+    --accent: #6b8cff;
+    --accent-text: #0b0d12;
+    --accent-soft: #1e2847;
+    --danger: #ff6b62;
+    --danger-soft: #3a1c1a;
+    --success: #4cc282;
+    --success-soft: #16301f;
+    --warn: #f0b545;
+    --warn-soft: #362a12;
+    --bubble-in: #1f232b;
+    --bubble-out: #3a5bd9;
+    --bubble-out-text: #ffffff;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 6px 20px rgb(0 0 0 / 0.5);
+  }
+}
