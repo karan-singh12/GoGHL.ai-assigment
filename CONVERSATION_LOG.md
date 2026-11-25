@@ -105,3 +105,12 @@ The raw, unedited AI export still goes into `ai-logs/` at submission.
 ## Prompt 16 — 2026-11-25
 
 > time up itt wrappup all the things
+
+## Prompt 17 — 2026-11-25
+
+> or anyone using Codex on Windows, the conversation logs are available in %USERPROFILE%\.codex\sessions. You can copy
+> the relevant assessment JSONL files into the ai-logs/ folder in your GitHub repository and push them.
+>
+> commitand push
+
+(Chose: copy the Claude Code session JSONL files into ai-logs/ with only the email address redacted.)
