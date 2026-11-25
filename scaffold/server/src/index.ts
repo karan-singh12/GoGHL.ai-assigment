@@ -5,7 +5,10 @@ import { installSignalHandlers, markReady, onShutdown } from './infra/lifecycle.
 import { instanceId, logger } from './infra/logger.js';
 import { closeMongo, connectMongo } from './infra/mongo.js';
 import { closeRedis, connectRedis } from './infra/redis.js';
+import { attachWebSocketGateway } from './realtime/ws.gateway.js';
 import { ensureIndexes } from './repositories/indexes.js';
+import { onReplyQueued } from './services/reply.service.js';
+import { outboxWorker } from './workers/outbox.worker.js';
 
 // Boot order: listen early (so /healthz answers 503 "starting" instead of
 // connection refused), then connect stores, ensure indexes, start background
@@ -31,7 +34,13 @@ async function main() {
 
   await ensureIndexes(db);
 
-  // Next phases register here: realtime gateway (attach to `server`), outbox worker.
+  // Realtime: auth on upgrade + tail of the per-workspace event streams.
+  onShutdown('ws', await attachWebSocketGateway(server));
+
+  // Outbox: sends queued replies; new replies wake it immediately.
+  outboxWorker.start();
+  onReplyQueued(outboxWorker.nudge);
+  onShutdown('outbox', () => outboxWorker.stop());
 
   markReady();
   logger.info('ready', { workspaces: Object.keys(env.pigeon.apiKeys) });

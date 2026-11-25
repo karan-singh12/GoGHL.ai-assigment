@@ -21,6 +21,7 @@ export function RequireAuth() {
         </EmptyState>
       </div>
     );
-  if (!me.data) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  // Remember where the user was (path + filter) so login brings them back there.
+  if (!me.data) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   return <Outlet />;
 }

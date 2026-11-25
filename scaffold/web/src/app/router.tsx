@@ -1,6 +1,5 @@
 import { createBrowserRouter, Link, useParams, useRouteError } from 'react-router';
-import { LoginPage } from '../features/auth/LoginPage';
-import { RequireAuth } from '../features/auth/RequireAuth';
+import { LoginPage, RequireAuth } from '../features/auth';
 import { ConversationPane, NoConversationSelected } from '../features/conversation/ConversationPane';
 import { RootRedirect } from '../features/workspace/RootRedirect';
 import { WorkspaceLayout } from '../features/workspace/WorkspaceLayout';

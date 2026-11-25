@@ -10,6 +10,10 @@ const BY_CODE: Record<string, string> = {
   CONVERSATION_NOT_FOUND: 'This conversation no longer exists.',
   VALIDATION_FAILED: 'Please check what you entered.',
   INTERNAL_ERROR: 'Something went wrong on our side. Please try again.',
+  LOGIN_STATE_INVALID: 'That sign-in link expired. Please try again.',
+  LOGIN_DENIED: 'Sign-in was cancelled.',
+  LOGIN_FAILED: 'We could not verify your sign-in. Please try again.',
+  IDP_UNAVAILABLE: 'The sign-in service is not reachable right now.',
 };
 
 export function messageFor(err: unknown): string {
@@ -24,7 +28,10 @@ export function messageFor(err: unknown): string {
 export const UI = {
   appName: 'Switchboard',
   signInTitle: 'Sign in to your team inbox',
-  signInButton: 'Continue with company sign-in',
+  signInButton: 'Sign in',
+  accountsNote: 'Accounts and workspace roles are managed by your identity provider. There is no sign-up here: ask your workspace admin for access.',
+  redirecting: 'Redirecting to sign-in…',
+  signOut: 'Sign out',
   emptyInbox: 'No conversations here yet.',
   pickConversation: 'Select a conversation to start.',
   emptyThread: 'No messages yet. Say hello.',

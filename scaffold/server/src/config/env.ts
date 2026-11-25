@@ -1,12 +1,18 @@
 import { z } from 'zod';
 
 // Every setting comes from the environment (contract B). Defaults match
-// .env.example so a clean clone runs with no .env file. If <repo>/.env
-// exists it is loaded first; real environment variables still win.
-try {
-  process.loadEnvFile(new URL('../../../../.env', import.meta.url));
-} catch {
-  // no .env file: defaults apply
+// .env.example so a clean clone runs with no .env file.
+//
+// Load order (loadEnvFile never overrides a variable that is already set):
+//   1. real environment (the check sets PORT, NODE_ENV, ...)  ← always wins
+//   2. scaffold/server/.env                                    ← your local keys
+//   3. <repo>/.env                                             ← optional fallback
+for (const file of ['../../.env', '../../../../.env']) {
+  try {
+    process.loadEnvFile(new URL(file, import.meta.url));
+  } catch {
+    // file not present: next one / defaults apply
+  }
 }
 
 const url = z.string().url();

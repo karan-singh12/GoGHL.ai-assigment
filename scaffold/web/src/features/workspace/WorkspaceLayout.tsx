@@ -4,8 +4,7 @@ import { RealtimeProvider, useConnectionStatus } from '../../realtime/RealtimePr
 import { Button } from '../../shared/ui/Button';
 import { ConnectionIndicator } from '../../shared/ui/ConnectionIndicator';
 import { EmptyState } from '../../shared/ui/EmptyState';
-import { useMe } from '../auth/useMe';
-import { useLogout } from '../auth/useLogout';
+import { useLogout, useMe } from '../auth';
 import { ConversationList } from '../inbox/ConversationList';
 import { useWorkspace } from './useWorkspace';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';

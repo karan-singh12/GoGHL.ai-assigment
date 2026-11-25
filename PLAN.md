@@ -18,6 +18,7 @@ Order of work follows the brief: level 1 → 5 → 2 → 3, then UI. Commit at t
 | Phase | Time | Work | Done when |
 |---|---|---|---|
 | **P0 Setup** | 0–10 | `git init`, `npm run up`, `npm run doctor`, `npm run scaffold:install`, add `zod`, `ws`, `jose`. Create the layered skeleton from `ARCHITECTURE.md`: `config/env.ts`, `constants/messages.ts`, `utils/{AppError,respond,asyncHandler}`, `middleware/{requestId,errorHandler,validate,notFound}`, `app.ts`, `repositories/indexes.ts`; healthz after ready. | Doctor all PASS, skeleton boots, first commit |
+| **P0.5 DB schema** ✅ `DB_SCHEMA.md`, typed docs, indexes, repositories, 16 tests (awaiting review) | — | Collections, indexes, repository layer with idempotent / atomic writes | `npm --prefix scaffold/server test` green |
 | **P1 Core (L1)** | 8–30 | Webhook: raw-body HMAC verify → timestamp ≤ 5 min → zod parse → idempotent store → 2xx. Grader `reset` / `snapshot` / `reply` / `claim`. Replies persisted first (outbox); worker sends with `Idempotency-Key = client_ref`, backoff, Retry-After. Forward-only status. Atomic claim. | `npm run check` ≈ 24/24 |
 | **P2 Auth + realtime (L5)** | 30–48 | OIDC code + PKCE, Redis sessions, httpOnly cookie. `/api/me`, `/api/conversations` (401/403). `/ws` auth on upgrade; every change → `seq` (Mongo counter) → `events` → Redis pub/sub fan-out; `after=` replay. | `npm run check -- --levels 5` passes |
 | **P3 Survive (L2/L3)** | 48–62 | Leased outbox jobs (`leaseUntil`), stale-lease recovery by any instance; Redis per-workspace token bucket + cool-off key; short pause on 503. | `check:full` L2/L3 pass (WSL/container) |
@@ -29,6 +30,18 @@ Order of work follows the brief: level 1 → 5 → 2 → 3, then UI. Commit at t
 - `agent`: claim an unassigned conversation, reply, close/reopen conversations they hold.
 - `admin`: everything an agent can do, plus unassign / reassign anyone's conversation.
 - Grader endpoints bypass roles but call the same domain functions (opaque `agent` id).
+
+## Status at submission
+
+| Phase | State |
+|---|---|
+| P0 Setup | ✅ layered server skeleton, env validation, response envelope |
+| P0.5 DB schema | ✅ `DB_SCHEMA.md`; realtime log moved to Redis Streams in P2 (seq ordering across instances) |
+| P1 Core (L1) | ✅ webhook, grader endpoints, outbox worker, shared rate limit: **level 1 24/24** |
+| P2 Auth + realtime (L5) | ✅ OIDC PKCE, sessions, `/ws` with replay: **level 5 15/15** |
+| P3 Survive (L2/L3) | ⚠️ designed in (leases, idempotency keys, shared limiter, stream), **not run on this Windows machine** |
+| P4 Frontend | ✅ built; wired to the real API; not clicked through by hand in the final build |
+| P5 Ship | ✅ README, DECISIONS, CHECK_REPORT (levels 1 + 5) |
 
 ## Cut list (record in `DECISIONS.md`)
 

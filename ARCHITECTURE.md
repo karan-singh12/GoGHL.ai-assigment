@@ -235,6 +235,10 @@ scaffold/web/src/
 
 ## 5. MongoDB collections
 
+> Detailed design, write rules and rationale: **[DB_SCHEMA.md](DB_SCHEMA.md)**. Change from the table below: the
+> outbox uses one field, `outboxDueAt`, as both "retry at" and "lease until" (plus `outboxOwner`), replacing
+> `sendState/nextAttemptAt/leaseUntil`.
+
 | Collection | Fields | Indexes |
 |---|---|---|
 | `conversations` | `workspace, contact, assignee \| null, state: open \| closed, lastActivityAt, createdAt, updatedAt` | unique `{workspace, contact}`; `{workspace, lastActivityAt: -1, _id: -1}` |

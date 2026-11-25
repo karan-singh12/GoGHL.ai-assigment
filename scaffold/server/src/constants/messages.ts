@@ -15,6 +15,7 @@ export const MSG = {
   CONVERSATION_CLOSED: { status: 200, message: 'Conversation closed.' },
   CONVERSATION_REOPENED: { status: 200, message: 'Conversation reopened.' },
   RESET_DONE: { status: 200, message: 'All application data deleted.' },
+  LOGGED_OUT: { status: 200, message: 'Signed out.' },
 
   // ---- client errors
   VALIDATION_FAILED: { status: 400, message: 'Request is invalid.' },
@@ -27,6 +28,12 @@ export const MSG = {
   CONVERSATION_NOT_FOUND: { status: 404, message: 'Conversation not found.' },
   CONVERSATION_TAKEN: { status: 409, message: 'Another agent already holds this conversation.' },
   PAYLOAD_TOO_LARGE: { status: 413, message: 'Request body is too large.' },
+
+  // ---- login (OIDC)
+  LOGIN_STATE_INVALID: { status: 400, message: 'Sign-in request expired or was not started here. Please try again.' },
+  LOGIN_DENIED: { status: 400, message: 'The identity provider did not complete the sign-in.' },
+  LOGIN_FAILED: { status: 401, message: 'Sign-in could not be verified.' },
+  IDP_UNAVAILABLE: { status: 503, message: 'The identity provider is not reachable.' },
 
   // ---- webhook (PIGEON.md: never 5xx for a bad request)
   WEBHOOK_BAD_SIGNATURE: { status: 401, message: 'Invalid signature.' },

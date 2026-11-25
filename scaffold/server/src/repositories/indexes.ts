@@ -1,23 +1,35 @@
 import type { Db, IndexDescription } from 'mongodb';
 import { logger } from '../infra/logger.js';
+import { COLLECTIONS } from './collections.js';
 
 /**
- * All indexes, declared next to the collections that own them. Created at boot
- * before /healthz turns green. createIndexes is idempotent and safe to run
- * from several instances at once.
- *
- * The collections and their indexes are filled in after the schema discussion
- * (see ARCHITECTURE.md §5): conversations, messages, events, counters.
+ * Every index, with the reason it exists in DB_SCHEMA.md. createIndexes is
+ * idempotent and safe when several instances boot at once.
  */
-export const COLLECTIONS = {
-  conversations: 'conversations',
-  messages: 'messages',
-  events: 'events',
-  counters: 'counters',
-} as const;
-
 export const INDEXES: Record<string, IndexDescription[]> = {
-  // e.g. [COLLECTIONS.conversations]: [{ key: { workspace: 1, contact: 1 }, unique: true, name: 'uniq_ws_contact' }],
+  [COLLECTIONS.conversations]: [
+    { key: { workspace: 1, contact: 1 }, name: 'uniq_ws_contact', unique: true },
+    { key: { workspace: 1, lastActivityAt: -1, _id: -1 }, name: 'inbox_all' },
+    { key: { workspace: 1, state: 1, lastActivityAt: -1, _id: -1 }, name: 'inbox_state' },
+    { key: { workspace: 1, assignee: 1, lastActivityAt: -1, _id: -1 }, name: 'inbox_assignee' },
+  ],
+  [COLLECTIONS.messages]: [
+    {
+      key: { workspace: 1, providerMessageId: 1 },
+      name: 'uniq_inbound_provider_id',
+      unique: true,
+      partialFilterExpression: { dir: 'in' },
+    },
+    {
+      key: { workspace: 1, clientRef: 1 },
+      name: 'uniq_outbound_client_ref',
+      unique: true,
+      partialFilterExpression: { dir: 'out' },
+    },
+    { key: { workspace: 1, contact: 1, occurredAt: 1, _id: 1 }, name: 'thread' },
+    { key: { outboxDueAt: 1 }, name: 'outbox_due', partialFilterExpression: { outboxDueAt: { $exists: true } } },
+  ],
+  // The realtime event log lives in Redis Streams (realtime/eventStream.ts), not here.
 };
 
 export async function ensureIndexes(db: Db): Promise<void> {

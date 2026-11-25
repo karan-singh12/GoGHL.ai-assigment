@@ -3,10 +3,10 @@ import { env } from '../config/env.js';
 import { REDIS_PREFIX } from '../config/constants.js';
 import { logger } from './logger.js';
 
-// Two connections: a connection in SUBSCRIBE mode cannot run normal
-// commands, so pub/sub gets its own.
+// One shared connection for normal commands. Blocking reads (XREAD BLOCK)
+// would stall every other command on it, so they get dedicated connections.
 let command: Redis | undefined;
-let subscriber: Redis | undefined;
+const blocking = new Set<Redis>();
 
 function create(name: string): Redis {
   const r = new Redis(env.redisUrl, {
@@ -33,13 +33,12 @@ export function getRedis(): Redis {
   return command;
 }
 
-/** Lazily opened connection reserved for SUBSCRIBE / PSUBSCRIBE. */
-export async function getSubscriber(): Promise<Redis> {
-  if (!subscriber) {
-    subscriber = create('sub');
-    await subscriber.connect();
-  }
-  return subscriber;
+/** A dedicated connection for blocking commands (XREAD BLOCK). Closed by closeRedis(). */
+export async function createBlockingClient(name: string): Promise<Redis> {
+  const r = create(name);
+  await r.connect();
+  blocking.add(r);
+  return r;
 }
 
 export async function pingRedis(): Promise<boolean> {
@@ -51,9 +50,10 @@ export async function pingRedis(): Promise<boolean> {
 }
 
 export async function closeRedis(): Promise<void> {
-  await Promise.allSettled([command?.quit(), subscriber?.quit()]);
+  for (const b of blocking) b.disconnect(); // a blocked connection cannot QUIT politely
+  blocking.clear();
+  await command?.quit().catch(() => undefined);
   command = undefined;
-  subscriber = undefined;
 }
 
 /** Builds an app-owned key: rkey('rl', 'ws_acme') -> "sb:rl:ws_acme". */

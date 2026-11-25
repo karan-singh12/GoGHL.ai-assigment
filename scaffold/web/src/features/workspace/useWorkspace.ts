@@ -1,6 +1,6 @@
 import { useParams } from 'react-router';
 import type { Role } from '../../domain/types';
-import { useMe } from '../auth/useMe';
+import { useMe } from '../auth';
 
 export interface WorkspaceContext {
   workspaceId: string;
